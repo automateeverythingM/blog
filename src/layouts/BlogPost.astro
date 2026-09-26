@@ -4,6 +4,7 @@ import type { CollectionEntry } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
+import Giscus from '../components/Giscus.astro';
 import Header from '../components/Header.astro';
 import { tagSlug } from '../lib/tagSlug.ts';
 
@@ -14,9 +15,15 @@ import { tagSlug } from '../lib/tagSlug.ts';
 type Props = Omit<CollectionEntry<'blog'>['data'], 'tags'> & {
 	tags?: string[];
 	minutesToRead?: number;
+	// Only a rendered blog post (src/pages/blog/[...slug].astro) passes
+	// `comments`, so pages that reuse this layout for non-post content (e.g.
+	// about.astro) don't get a Giscus comment box - and don't create a GitHub
+	// Discussion - for pages that aren't posts.
+	comments?: boolean;
 };
 
-const { title, description, pubDate, updatedDate, heroImage, tags, minutesToRead } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, tags, minutesToRead, comments } =
+	Astro.props;
 
 // A tag with no letters or digits (e.g. "!!!") has no usable slug and thus no
 // /tags/<slug>/ page (see tagSlug.ts and groupPostsByTag.ts), so it's dropped
@@ -120,6 +127,7 @@ const linkableTags = (tags ?? []).filter((tag) => tagSlug(tag) !== '');
 						<hr />
 					</div>
 					<slot />
+					{comments && <Giscus />}
 				</div>
 			</article>
 		</main>

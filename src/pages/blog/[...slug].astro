@@ -20,7 +20,7 @@ const { Content } = await render(post);
 const minutesToRead = getReadingTimeMinutes(post.body ?? '');
 ---
 
-<BlogPost {...post.data} minutesToRead={minutesToRead}>
+<BlogPost {...post.data} minutesToRead={minutesToRead} comments>
 	{/*
 		Posts author custom components (e.g. using-mdx.mdx's <HeaderLink>) without
 		an ESM `import` statement, because Keystatic's `fields.mdx` editor (see
