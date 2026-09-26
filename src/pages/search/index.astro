@@ -1,0 +1,116 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Header from '../../components/Header.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`Search | ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+		<style>
+			main {
+				width: 720px;
+				max-width: calc(100% - 2em);
+				margin: 0 auto;
+			}
+			input[type='search'] {
+				width: 100%;
+				box-sizing: border-box;
+				padding: 0.5em 0.75em;
+				font-size: 1.2em;
+				border: 1px solid rgb(var(--gray));
+				border-radius: 8px;
+			}
+			#search-status {
+				color: rgb(var(--gray));
+			}
+			ul {
+				list-style-type: none;
+				margin: 0;
+				padding: 0;
+			}
+			#search-results :global(li) {
+				padding: 0.5em 0;
+				border-bottom: 1px solid rgb(var(--gray-light));
+			}
+			#search-results :global(a) {
+				text-decoration: none;
+			}
+			#search-results :global(a:hover) {
+				color: rgb(var(--accent));
+			}
+			#search-results :global(.date) {
+				color: rgb(var(--gray));
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<h1>Search</h1>
+			<input
+				id="search-input"
+				type="search"
+				placeholder="Search by title, description or tag…"
+				autocomplete="off"
+			/>
+			<p id="search-status" aria-live="polite"></p>
+			<ul id="search-results"></ul>
+		</main>
+		<Footer />
+		<script>
+			import { formatDate } from '../../lib/formatDate.ts';
+			import { matchesSearchQuery } from '../../lib/searchMatch.ts';
+			import type { SearchIndexEntry } from '../search-index.json.ts';
+
+			const input = document.querySelector<HTMLInputElement>('#search-input');
+			const status = document.querySelector<HTMLParagraphElement>('#search-status');
+			const results = document.querySelector<HTMLUListElement>('#search-results');
+
+			if (input && status && results) {
+				let index: SearchIndexEntry[] = [];
+
+				function render(query: string) {
+					const matches = index.filter((post) => matchesSearchQuery(post, query));
+
+					results!.replaceChildren(
+						...matches.map((post) => {
+							const li = document.createElement('li');
+							const a = document.createElement('a');
+							a.href = post.url;
+							a.textContent = post.title;
+							const date = document.createElement('p');
+							date.className = 'date';
+							date.textContent = formatDate(new Date(post.date));
+							a.appendChild(date);
+							li.appendChild(a);
+							return li;
+						}),
+					);
+
+					status!.textContent =
+						query.trim() === ''
+							? `${index.length} post${index.length === 1 ? '' : 's'}`
+							: `${matches.length} match${matches.length === 1 ? '' : 'es'}`;
+				}
+
+				fetch('/search-index.json')
+					.then((response) => {
+						if (!response.ok) throw new Error(`Request failed with status ${response.status}`);
+						return response.json();
+					})
+					.then((data: SearchIndexEntry[]) => {
+						index = data;
+						render(input.value);
+					})
+					.catch(() => {
+						status!.textContent = 'Search is unavailable right now.';
+					});
+
+				input.addEventListener('input', () => render(input.value));
+			}
+		</script>
+	</body>
+</html>
