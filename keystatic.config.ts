@@ -127,6 +127,11 @@ export const postsCollection = collection({
 			description: 'Hide this post from the built site until unchecked.',
 			defaultValue: false,
 		}),
+		tags: fields.array(fields.text({ label: 'Tag' }), {
+			label: 'Tags',
+			description: 'Shown on the post, each linking to its own /tags/<tag>/ page.',
+			itemLabel: (props) => props.value || 'Tag',
+		}),
 		content: fields.mdx({
 			label: 'Content',
 			components: postsContentComponents,
