@@ -2,7 +2,11 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { test } from 'node:test';
-import keystaticConfig, { DATE_PATTERN, postsCollection, postsContentComponents } from './keystatic.config.ts';
+import keystaticConfig, {
+	DATE_PATTERN,
+	postsCollection,
+	postsContentComponents,
+} from './keystatic.config.ts';
 import { parseFrontmatterDate } from './src/lib/parseFrontmatterDate.ts';
 
 const BLOG_DIR = path.resolve(import.meta.dirname, 'src/content/blog');
@@ -86,7 +90,10 @@ test('DATE_PATTERN only accepts values parseFrontmatterDate turns into a valid d
 		'Jul 08 2022',
 	]) {
 		assert.match(value, DATE_PATTERN.regex);
-		assert.ok(!Number.isNaN(parseFrontmatterDate(value).getTime()), `${value} should be a valid date`);
+		assert.ok(
+			!Number.isNaN(parseFrontmatterDate(value).getTime()),
+			`${value} should be a valid date`,
+		);
 	}
 	// An empty string is allowed (for the optional updatedDate field being left blank).
 	assert.match('', DATE_PATTERN.regex);
@@ -98,7 +105,7 @@ test('DATE_PATTERN rejects values that are not a supported date format', () => {
 	}
 });
 
-test('every post in src/content/blog, including using-mdx.mdx, parses with the collection\'s content field', async () => {
+test("every post in src/content/blog, including using-mdx.mdx, parses with the collection's content field", async () => {
 	// Keystatic's public entry point stubs out the real MDX-to-editor-state
 	// parser when it's not bundled for a browser (see the "this is used in
 	// react-server environments to avoid bundling UI when the reader API is
