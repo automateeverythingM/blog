@@ -1,0 +1,52 @@
+---
+import { type CollectionEntry, getCollection } from 'astro:content';
+import BaseHead from '../../../components/BaseHead.astro';
+import Footer from '../../../components/Footer.astro';
+import Header from '../../../components/Header.astro';
+import PostList from '../../../components/PostList.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../../../consts';
+import { groupPostsByTag } from '../../../lib/groupPostsByTag.ts';
+import { isPostPublished } from '../../../lib/isPostPublished.ts';
+
+export async function getStaticPaths() {
+	// No page is built for a draft or not-yet-scheduled post, so its tags don't
+	// get their own page (or a stale post) either. See isPostPublished.ts.
+	const posts = await getCollection('blog', (post) => isPostPublished(post.data));
+
+	return groupPostsByTag(posts).map(({ slug, tag, posts }) => ({
+		params: { tag: slug },
+		props: { tag, posts },
+	}));
+}
+
+type Props = { tag: string; posts: CollectionEntry<'blog'>[] };
+
+const { tag, posts } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`${tag} | ${SITE_TITLE}`} description={SITE_DESCRIPTION} />
+		<style>
+			main {
+				width: 960px;
+			}
+			h1 {
+				width: 720px;
+				max-width: calc(100% - 2em);
+				margin: 0 auto 1em;
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<h1>Tag: {tag}</h1>
+			<section>
+				<PostList posts={posts} />
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>

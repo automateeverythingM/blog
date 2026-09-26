@@ -10,7 +10,15 @@ import keystaticConfig, {
 import { parseFrontmatterDate } from './src/lib/parseFrontmatterDate.ts';
 
 const BLOG_DIR = path.resolve(import.meta.dirname, 'src/content/blog');
-const BLOG_SCHEMA_FIELDS = ['title', 'description', 'pubDate', 'updatedDate', 'heroImage', 'draft'];
+const BLOG_SCHEMA_FIELDS = [
+	'title',
+	'description',
+	'pubDate',
+	'updatedDate',
+	'heroImage',
+	'draft',
+	'tags',
+];
 
 function blogPostFiles() {
 	return fs.readdirSync(BLOG_DIR).filter((file) => file.endsWith('.mdx'));
@@ -66,6 +74,13 @@ test('draft is a checkbox that defaults to false, matching the blog schema', () 
 	assert.equal(draft.defaultValue(), false);
 	assert.doesNotThrow(() => draft.validate(false));
 	assert.doesNotThrow(() => draft.validate(true));
+});
+
+test('tags is an array of text fields, defaulting to empty, matching the blog schema', () => {
+	const tags = postsCollection.schema.tags;
+	assert.equal(tags.kind, 'array');
+	assert.equal(tags.element.kind, 'form');
+	assert.equal(tags.element.defaultValue(), '');
 });
 
 test('the content field stores the post body as a single .mdx file', () => {

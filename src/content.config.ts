@@ -20,6 +20,9 @@ const blog = defineCollection({
 			// Hides the post from the built site (see src/lib/isPostPublished.ts)
 			// until this is unchecked.
 			draft: z.boolean().default(false),
+			// Shown on the post page, each linking to /tags/<slug>/ (see
+			// src/lib/tagSlug.ts). Optional; a post can have no tags.
+			tags: z.array(z.string()).default([]),
 		}),
 });
 
