@@ -1,0 +1,9 @@
+dist/
+.astro/
+.vercel/
+node_modules/
+package-lock.json
+public/
+# Post content is prose: keep it exactly as written.
+src/content/blog/
+*.md

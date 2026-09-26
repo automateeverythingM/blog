@@ -17,7 +17,8 @@ import { createElement } from 'react';
 export const DATE_PATTERN = {
 	regex:
 		/^(?:|\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\d|3[01])(?:T(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d)?(?:\.\d{1,3})?(?:Z|[+-][01]\d:[0-5]\d)?)?|(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) (?:0[1-9]|[12]\d|3[01]) \d{4})$/,
-	message: 'Use YYYY-MM-DD (optionally with a time), or "Mon DD YYYY", e.g. 2024-06-01 or Jun 01 2024',
+	message:
+		'Use YYYY-MM-DD (optionally with a time), or "Mon DD YYYY", e.g. 2024-06-01 or Jun 01 2024',
 };
 
 /**
@@ -37,7 +38,7 @@ const headerLinkComponent = wrapper({
 		href: fields.text({ label: 'Href', validation: { isRequired: true } }),
 		onclick: fields.text({
 			label: 'onclick',
-			description: 'Raw HTML onclick attribute, e.g. alert(\'clicked!\')',
+			description: "Raw HTML onclick attribute, e.g. alert('clicked!')",
 		}),
 	},
 });
