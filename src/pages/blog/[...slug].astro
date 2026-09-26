@@ -1,5 +1,6 @@
 ---
 import { type CollectionEntry, getCollection, render } from 'astro:content';
+import HeaderLink from '../../components/HeaderLink.astro';
 import { getReadingTimeMinutes } from '../../lib/readingTime.ts';
 import BlogPost from '../../layouts/BlogPost.astro';
 
@@ -18,5 +19,12 @@ const minutesToRead = getReadingTimeMinutes(post.body ?? '');
 ---
 
 <BlogPost {...post.data} minutesToRead={minutesToRead}>
-	<Content />
+	{/*
+		Posts author custom components (e.g. using-mdx.mdx's <HeaderLink>) without
+		an ESM `import` statement, because Keystatic's `fields.mdx` editor (see
+		`keystatic.config.ts`) can't parse a plain `import` inside the document.
+		Passing them here instead keeps every post editable in Keystatic while
+		rendering exactly as if the component had been imported in the file.
+	*/}
+	<Content components={{ HeaderLink }} />
 </BlogPost>
