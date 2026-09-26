@@ -12,6 +12,6 @@ export function isPostPublished(
 	post: { draft?: boolean; pubDate: Date },
 	now: Date = new Date(),
 ): boolean {
-	const isScheduledForLater = post.pubDate.getTime() > now.getTime()
+	const isScheduledForLater = post.pubDate.getTime() > now.getTime();
 	return !post.draft && !isScheduledForLater;
 }
