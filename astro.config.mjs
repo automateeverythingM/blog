@@ -6,6 +6,7 @@ import sitemap from '@astrojs/sitemap';
 import vercel from '@astrojs/vercel';
 import keystatic from '@keystatic/astro';
 import { defineConfig, fontProviders } from 'astro/config';
+import { shouldEnableVercelWebAnalytics } from './src/lib/vercelWebAnalytics.ts';
 
 // https://astro.build/config
 export default defineConfig({
@@ -15,7 +16,15 @@ export default defineConfig({
 	// for its browser editor at /keystatic (and its /api/keystatic backend),
 	// which opt into `prerender: false` themselves; every other route keeps
 	// prerendering as before.
-	adapter: vercel(),
+	adapter: vercel({
+		// Vercel Web Analytics: a cookie-free page view counter served from
+		// Vercel's own edge, enabled here via the adapter's built-in option
+		// rather than the @vercel/analytics package. It's turned off while
+		// running the dev server (see shouldEnableVercelWebAnalytics) so local
+		// page loads never get counted as visits; flipping it on in the
+		// Vercel dashboard is a separate, manual step.
+		webAnalytics: { enabled: shouldEnableVercelWebAnalytics() },
+	}),
 	// `react()` must come before `keystatic()`: Keystatic's admin UI is a React
 	// app and relies on the React integration being registered first.
 	integrations: [mdx(), sitemap(), react(), keystatic()],
