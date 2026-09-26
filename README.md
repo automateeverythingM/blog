@@ -15,6 +15,15 @@ Features:
 - ✅ RSS Feed support
 - ✅ Markdown & MDX support
 
+## ✍️ Editing posts
+
+Posts live in `src/content/blog/` as `.mdx` files. You can edit them in the browser with Keystatic:
+
+- **Locally:** run `npm run dev` and open http://localhost:4321/keystatic. Changes are saved straight to the files.
+- **On the live site:** open `/keystatic` and sign in with GitHub. Each save becomes a commit to this repository.
+
+Dates are written as `YYYY-MM-DD` (for example `2026-09-26`).
+
 ## 🚀 Project Structure
 
 Inside of your Astro project, you'll see the following folders and files:
