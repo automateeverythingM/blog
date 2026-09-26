@@ -17,6 +17,9 @@ const blog = defineCollection({
 			pubDate: z.preprocess(parseFrontmatterDate, z.date()),
 			updatedDate: z.preprocess(parseFrontmatterDate, z.date()).optional(),
 			heroImage: z.optional(image()),
+			// Hides the post from the built site (see src/lib/isPostPublished.ts)
+			// until this is unchecked.
+			draft: z.boolean().default(false),
 		}),
 });
 

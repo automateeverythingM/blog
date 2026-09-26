@@ -122,6 +122,11 @@ export const postsCollection = collection({
 			directory: 'src/assets',
 			publicPath: '../../assets/',
 		}),
+		draft: fields.checkbox({
+			label: 'Draft',
+			description: 'Hide this post from the built site until unchecked.',
+			defaultValue: false,
+		}),
 		content: fields.mdx({
 			label: 'Content',
 			components: postsContentComponents,
