@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { test } from 'node:test';
-import { DATE_PATTERN, postsCollection, postsContentComponents } from './keystatic.config.ts';
+import keystaticConfig, { DATE_PATTERN, postsCollection, postsContentComponents } from './keystatic.config.ts';
 import { parseFrontmatterDate } from './src/lib/parseFrontmatterDate.ts';
 
 const BLOG_DIR = path.resolve(import.meta.dirname, 'src/content/blog');
@@ -22,6 +22,10 @@ function splitFrontmatter(data: Buffer) {
 		body: data.subarray(Buffer.byteLength(match[0], 'utf8')),
 	};
 }
+
+test('the editor is branded "Blog" instead of the default "Keystatic"', () => {
+	assert.equal(keystaticConfig.ui?.brand?.name, 'Blog');
+});
 
 test('the "Posts" collection has a field for every field of the blog schema', () => {
 	for (const key of BLOG_SCHEMA_FIELDS) {

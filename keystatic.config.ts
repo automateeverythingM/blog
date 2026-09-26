@@ -135,6 +135,9 @@ export const postsCollection = collection({
 const isDev = import.meta.env?.DEV ?? true;
 
 export default config({
+	ui: {
+		brand: { name: 'Blog' },
+	},
 	storage: isDev
 		? { kind: 'local' }
 		: {
