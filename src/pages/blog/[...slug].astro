@@ -1,5 +1,6 @@
 ---
 import { type CollectionEntry, getCollection, render } from 'astro:content';
+import BackToTop from '../../components/BackToTop.astro';
 import HeaderLink from '../../components/HeaderLink.astro';
 import PostNavigation from '../../components/PostNavigation.astro';
 import { getAdjacentPosts } from '../../lib/getAdjacentPosts.ts';
@@ -32,5 +33,6 @@ const { previous, next } = getAdjacentPosts(await getCollection('blog'), post.id
 		rendering exactly as if the component had been imported in the file.
 	*/}
 	<Content components={{ HeaderLink }} />
+	<BackToTop />
 	<PostNavigation previous={previous} next={next} />
 </BlogPost>

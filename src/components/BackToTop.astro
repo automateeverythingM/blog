@@ -1,0 +1,17 @@
+---
+// A plain `#top` fragment link. Per the HTML spec's scroll-to-fragment
+// algorithm, navigating to `#top` scrolls to the top of the document even
+// though no element on the page has `id="top"`, so this works without any
+// JavaScript.
+---
+
+<p class="back-to-top">
+	<a href="#top">Back to top</a>
+</p>
+
+<style>
+	.back-to-top {
+		margin-top: 2em;
+		font-size: 0.9em;
+	}
+</style>
