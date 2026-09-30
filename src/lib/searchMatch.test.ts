@@ -78,3 +78,9 @@ test('a query without diacritics matches a post tag with dj for đ ("djak" finds
 	const djak = { title: 'Naslov', description: '', tags: ['Đak'] };
 	assert.equal(matchesSearchQuery(djak, 'djak'), true);
 });
+
+test('a query containing a lone "%" does not throw (not a URI-encoded string)', () => {
+	const discount = { title: '50% off sale', description: '', tags: [] };
+	assert.doesNotThrow(() => matchesSearchQuery(discount, '50%'));
+	assert.equal(matchesSearchQuery(discount, '50%'), true);
+});
