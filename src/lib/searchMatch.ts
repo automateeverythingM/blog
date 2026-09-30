@@ -23,7 +23,7 @@ export type SearchablePost = {
  * ("Život", "Čas", "Đak").
  */
 function normalize(text: string): string {
-	return text
+	return decodeURIComponent(text)
 		.replace(/đ/g, 'dj')
 		.replace(/Đ/g, 'dj')
 		.normalize('NFD')
