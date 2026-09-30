@@ -28,7 +28,12 @@ export async function GET() {
 		}))
 		.sort((a, b) => new Date(b.date).valueOf() - new Date(a.date).valueOf());
 
-	return new Response(JSON.stringify(index), {
+	// Keep the file small: empty lists (a post with no tags) are left out.
+	const body = JSON.stringify(index, (_key, value) =>
+		Array.isArray(value) && value.length === 0 ? undefined : value,
+	);
+
+	return new Response(body, {
 		headers: { 'Content-Type': 'application/json' },
 	});
 }
