@@ -8,7 +8,9 @@
 export type SearchablePost = {
 	title: string;
 	description: string;
-	tags: string[];
+	// Optional because the search index (src/pages/search-index.json.ts) omits
+	// this field entirely for posts with no tags, to keep the JSON file small.
+	tags?: string[];
 };
 
 /**
@@ -43,6 +45,6 @@ export function matchesSearchQuery(post: SearchablePost, query: string): boolean
 	const words = normalize(query.trim()).split(/\s+/).filter(Boolean);
 	if (words.length === 0) return true;
 
-	const haystack = normalize([post.title, post.description, ...post.tags].join(' '));
+	const haystack = normalize([post.title, post.description, ...(post.tags ?? [])].join(' '));
 	return words.every((word) => haystack.includes(word));
 }
