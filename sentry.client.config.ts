@@ -9,5 +9,12 @@ Sentry.init({
 	dsn,
 	enabled: Boolean(dsn),
 	tracesSampleRate: 0,
-	sendDefaultPii: false,
+	// No personal data: no user fields, cookies, headers, request bodies or query strings.
+	dataCollection: {
+		userInfo: false,
+		cookies: false,
+		httpHeaders: false,
+		httpBodies: [],
+		urlQueryParams: false,
+	},
 });
