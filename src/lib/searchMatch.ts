@@ -21,9 +21,14 @@ export type SearchablePost = {
  * marks, then lowercases. This lets a visitor who types without Serbian
  * diacritics ("zivot", "cas", "djak") still find posts that use them
  * ("Život", "Čas", "Đak").
+ *
+ * This operates on plain text (post titles/descriptions/tags and the raw
+ * search query), not URI-encoded strings, so it must not run the text
+ * through decodeURIComponent: a query like "50%" isn't valid percent-encoding
+ * and would throw a URIError ("URI malformed").
  */
 function normalize(text: string): string {
-	return decodeURIComponent(text)
+	return text
 		.replace(/đ/g, 'dj')
 		.replace(/Đ/g, 'dj')
 		.normalize('NFD')
