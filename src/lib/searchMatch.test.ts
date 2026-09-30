@@ -58,6 +58,12 @@ test('a post with no tags can still match on title or description', () => {
 	assert.equal(matchesSearchQuery(untagged, 'astro'), false);
 });
 
+test('a post whose tags field is missing entirely (as the search index omits empty tag lists to stay small) can still match on title or description', () => {
+	const untagged = { title: 'First Post', description: 'Welcome to my blog.' };
+	assert.equal(matchesSearchQuery(untagged, 'welcome'), true);
+	assert.equal(matchesSearchQuery(untagged, 'astro'), false);
+});
+
 test('a query without diacritics matches a post title with them ("zivot" finds "Zivot")', () => {
 	const zivot = { title: 'Život na selu', description: '', tags: [] };
 	assert.equal(matchesSearchQuery(zivot, 'zivot'), true);
