@@ -5,8 +5,12 @@ import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import vercel from '@astrojs/vercel';
 import keystatic from '@keystatic/astro';
+import sentry from '@sentry/astro';
 import { defineConfig, fontProviders } from 'astro/config';
+import { sentryBuildSettings } from './src/lib/sentryConfig.ts';
 import { shouldEnableVercelWebAnalytics } from './src/lib/vercelWebAnalytics.ts';
+
+const sentrySettings = sentryBuildSettings();
 
 // https://astro.build/config
 export default defineConfig({
@@ -27,7 +31,20 @@ export default defineConfig({
 	}),
 	// `react()` must come before `keystatic()`: Keystatic's admin UI is a React
 	// app and relies on the React integration being registered first.
-	integrations: [mdx(), sitemap(), react(), keystatic()],
+	integrations: [
+		mdx(),
+		sitemap(),
+		react(),
+		keystatic(),
+		// Error tracking, off unless PUBLIC_SENTRY_DSN is set (src/lib/sentryConfig.ts).
+		sentry({
+			enabled: Boolean(sentrySettings.dsn),
+			org: 'dropinnodex',
+			project: 'blog',
+			telemetry: false,
+			sourcemaps: { disable: !sentrySettings.uploadSourceMaps },
+		}),
+	],
 	fonts: [
 		{
 			provider: fontProviders.local(),
