@@ -1,8 +1,8 @@
 // Place any global data in this file.
 // You can import this data from anywhere in your site by using the `import` keyword.
 
-export const SITE_TITLE = 'Astro Blog';
-export const SITE_DESCRIPTION = 'Welcome to my website!';
+export const SITE_TITLE = 'Marko Pavic';
+export const SITE_DESCRIPTION = 'Notes on building software with AI agents';
 
 // Giscus (https://giscus.app) powers the comment box at the end of every blog
 // post, storing comments as GitHub Discussions on GISCUS_REPO. The three IDs
