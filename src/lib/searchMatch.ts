@@ -41,7 +41,8 @@ function normalize(text: string): string {
  * words, and every word must appear (case- and diacritic-insensitively, as a
  * substring) somewhere in the post's title, description, or tags. Word order
  * and which field each word matches in don't matter, so "astro markdown"
- * matches a post titled "Markdown Style Guide" tagged "astro".
+ * matches a post titled "Markdown Style Guide" tagged "astro". A word may
+ * use simple pattern syntax ("colou?r") to match spelling variants.
  *
  * An empty (or whitespace-only) query matches every post, so the search page
  * can show the full list before the visitor has typed anything.
@@ -51,5 +52,7 @@ export function matchesSearchQuery(post: SearchablePost, query: string): boolean
 	if (words.length === 0) return true;
 
 	const haystack = normalize([post.title, post.description, ...(post.tags ?? [])].join(' '));
-	return words.every((word) => haystack.includes(word));
+	// Each word is read as a pattern, so a visitor can type "colou?r" or "post(s)"
+	// to catch both spellings.
+	return words.every((word) => new RegExp(word, 'i').test(haystack));
 }
