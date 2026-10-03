@@ -91,7 +91,7 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
 						...matches.map(({ post, published }) => {
 							const li = document.createElement('li');
 							const a = document.createElement('a');
-							a.href = post.url;
+							a.href = `${post.url}?highlight=${encodeURIComponent(query.trim())}`;
 							a.textContent = post.title;
 							const date = document.createElement('time');
 							date.className = 'date';
