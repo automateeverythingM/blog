@@ -15,3 +15,14 @@ export function isPostPublished(
 	const isScheduledForLater = post.pubDate.getTime() > now.getTime();
 	return !post.draft && !isScheduledForLater;
 }
+
+/**
+ * The date a post went out, or `undefined` if it isn't published (a draft,
+ * or scheduled for later - see isPostPublished above).
+ */
+export function publishedDate(
+	post: { draft?: boolean; pubDate: Date },
+	now: Date = new Date(),
+): Date | undefined {
+	return isPostPublished(post, now) ? post.pubDate : undefined;
+}
