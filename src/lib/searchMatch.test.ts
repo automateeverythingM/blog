@@ -84,3 +84,9 @@ test('a query containing a lone "%" does not throw (not a URI-encoded string)', 
 	assert.doesNotThrow(() => matchesSearchQuery(discount, '50%'));
 	assert.equal(matchesSearchQuery(discount, '50%'), true);
 });
+
+test('a query that is not a valid regular expression ("c++") does not throw and matches literally', () => {
+	const post = { title: 'Learning C++', description: '', tags: [] };
+	assert.doesNotThrow(() => matchesSearchQuery(post, 'c++'));
+	assert.equal(matchesSearchQuery(post, 'c++'), true);
+});

@@ -53,6 +53,14 @@ export function matchesSearchQuery(post: SearchablePost, query: string): boolean
 
 	const haystack = normalize([post.title, post.description, ...(post.tags ?? [])].join(' '));
 	// Each word is read as a pattern, so a visitor can type "colou?r" or "post(s)"
-	// to catch both spellings.
-	return words.every((word) => new RegExp(word, 'i').test(haystack));
+	// to catch both spellings. A word that isn't a valid pattern (e.g. "c++",
+	// where "++" has nothing to repeat) would otherwise throw a SyntaxError and
+	// break the whole search; fall back to matching it as a literal substring.
+	return words.every((word) => {
+		try {
+			return new RegExp(word, 'i').test(haystack);
+		} catch {
+			return haystack.includes(word);
+		}
+	});
 }
