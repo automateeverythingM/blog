@@ -1,12 +1,7 @@
 import { getCollection } from 'astro:content';
-import { publishedDate } from '../lib/isPostPublished.ts';
-import type { SearchablePost } from '../lib/searchMatch.ts';
+import { buildSearchIndex } from '../lib/buildSearchIndex.ts';
 
-export type SearchIndexEntry = SearchablePost & {
-	/** When the post went out, as an ISO date (see publishedDate in isPostPublished.ts). */
-	date?: string;
-	url: string;
-};
+export type { SearchIndexEntry } from '../lib/buildSearchIndex.ts';
 
 /**
  * The search index consumed by src/pages/search/index.astro: one entry per
@@ -17,13 +12,7 @@ export type SearchIndexEntry = SearchablePost & {
 export async function GET() {
 	const posts = await getCollection('blog');
 
-	const index: SearchIndexEntry[] = posts.map((post) => ({
-		title: post.data.title,
-		description: post.data.description,
-		tags: post.data.tags,
-		date: publishedDate(post.data)?.toISOString(),
-		url: `/blog/${post.id}/`,
-	}));
+	const index = buildSearchIndex(posts);
 
 	// Keep the file small: empty lists (a post with no tags) are left out.
 	const body = JSON.stringify(index, (_key, value) =>
