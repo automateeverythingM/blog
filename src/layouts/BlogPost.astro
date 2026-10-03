@@ -93,6 +93,10 @@ const linkableTags = (tags ?? []).filter((tag) => tagSlug(tag) !== '');
 			.tags li a:hover {
 				color: rgb(var(--accent));
 			}
+			.post-body :global(mark) {
+				padding: 0 0.1em;
+				border-radius: 3px;
+			}
 		</style>
 	</head>
 
@@ -126,11 +130,27 @@ const linkableTags = (tags ?? []).filter((tag) => tagSlug(tag) !== '');
 						)}
 						<hr />
 					</div>
-					<slot />
+					<div class="post-body">
+						<slot />
+					</div>
 					{comments && <Giscus />}
 				</div>
 			</article>
 		</main>
 		<Footer />
+		<script>
+			// Coming from search (/search links here with ?highlight=<what was typed>):
+			// mark each searched word in the post and scroll to the first one.
+			const highlight = new URLSearchParams(window.location.search).get('highlight');
+			const body = document.querySelector<HTMLElement>('.post-body');
+
+			if (highlight && body) {
+				for (const word of highlight.trim().split(/\s+/)) {
+					body.innerHTML = body.innerHTML.split(word).join(`<mark>${word}</mark>`);
+				}
+				const marks = body.getElementsByTagName('mark');
+				marks[0].scrollIntoView({ block: 'center' });
+			}
+		</script>
 	</body>
 </html>
