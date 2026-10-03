@@ -64,7 +64,7 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
 		<script>
 			import { formatDate } from '../../lib/formatDate.ts';
 			import { matchesSearchQuery } from '../../lib/searchMatch.ts';
-			import type { SearchIndexEntry } from '../search-index.json.ts';
+			import type { SearchIndexEntry } from '../../lib/buildSearchIndex.ts';
 
 			const input = document.querySelector<HTMLInputElement>('#search-input');
 			const status = document.querySelector<HTMLParagraphElement>('#search-status');
