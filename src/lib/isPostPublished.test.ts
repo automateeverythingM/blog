@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { isPostPublished } from './isPostPublished.ts';
+import { isPostPublished, publishedDate } from './isPostPublished.ts';
 
 const now = new Date('2026-09-26T00:00:00Z');
 
@@ -37,4 +37,17 @@ test('a draft post with a future pubDate is not published', () => {
 test('defaults "now" to the current time when not given', () => {
 	assert.equal(isPostPublished({ draft: false, pubDate: new Date('2000-01-01') }), true);
 	assert.equal(isPostPublished({ draft: false, pubDate: new Date('2999-01-01') }), false);
+});
+
+test('publishedDate is the pubDate of a published post', () => {
+	const pubDate = new Date('2026-09-25');
+	assert.equal(publishedDate({ draft: false, pubDate }, now), pubDate);
+});
+
+test('publishedDate is undefined for a draft', () => {
+	assert.equal(publishedDate({ draft: true, pubDate: new Date('2026-09-25') }, now), undefined);
+});
+
+test('publishedDate is undefined for a post scheduled for later', () => {
+	assert.equal(publishedDate({ draft: false, pubDate: new Date('2026-09-27') }, now), undefined);
 });

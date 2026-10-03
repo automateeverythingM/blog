@@ -43,6 +43,7 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
 			}
 			#search-results :global(.date) {
 				color: rgb(var(--gray));
+				display: block;
 			}
 		</style>
 	</head>
@@ -73,27 +74,36 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
 				let index: SearchIndexEntry[] = [];
 
 				function render(query: string) {
-					const matches = index.filter((post) => matchesSearchQuery(post, query));
+					// Nothing typed yet: just say how many posts there are to search.
+					if (query.trim() === '') {
+						results!.replaceChildren();
+						status!.textContent = `${index.length} post${index.length === 1 ? '' : 's'}`;
+						return;
+					}
+
+					// Newest first.
+					const matches = index
+						.filter((post) => matchesSearchQuery(post, query))
+						.map((post) => ({ post, published: new Date(post.date ?? '') }))
+						.sort((a, b) => b.published.getTime() - a.published.getTime());
 
 					results!.replaceChildren(
-						...matches.map((post) => {
+						...matches.map(({ post, published }) => {
 							const li = document.createElement('li');
 							const a = document.createElement('a');
 							a.href = post.url;
 							a.textContent = post.title;
-							const date = document.createElement('p');
+							const date = document.createElement('time');
 							date.className = 'date';
-							date.textContent = formatDate(new Date(post.date));
+							date.dateTime = published.toISOString();
+							date.textContent = formatDate(published);
 							a.appendChild(date);
 							li.appendChild(a);
 							return li;
 						}),
 					);
 
-					status!.textContent =
-						query.trim() === ''
-							? `${index.length} post${index.length === 1 ? '' : 's'}`
-							: `${matches.length} match${matches.length === 1 ? '' : 'es'}`;
+					status!.textContent = `${matches.length} match${matches.length === 1 ? '' : 'es'}`;
 				}
 
 				fetch('/search-index.json')
