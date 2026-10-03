@@ -24,7 +24,10 @@
  *   HTML-escaped before being re-inserted, so a crafted `?highlight=` value
  *   can't inject markup.
  */
-export function highlightMatches(html: string, highlight: string): { html: string; matched: boolean } {
+export function highlightMatches(
+	html: string,
+	highlight: string,
+): { html: string; matched: boolean } {
 	const words = highlight.trim().split(/\s+/).filter(Boolean);
 	if (words.length === 0) return { html, matched: false };
 
