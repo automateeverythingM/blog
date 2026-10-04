@@ -90,3 +90,21 @@ test('a query that is not a valid regular expression ("c++") does not throw and 
 	assert.doesNotThrow(() => matchesSearchQuery(post, 'c++'));
 	assert.equal(matchesSearchQuery(post, 'c++'), true);
 });
+
+test('tag:<name> keeps only posts with that tag', () => {
+	assert.equal(matchesSearchQuery(post, 'tag:astro'), true);
+	assert.equal(matchesSearchQuery(post, 'tag:travel'), false);
+});
+
+test('tag:<name> must match a whole tag, not part of one', () => {
+	assert.equal(matchesSearchQuery(post, 'tag:mark'), false);
+});
+
+test('tag filters combine with words', () => {
+	assert.equal(matchesSearchQuery(post, 'style tag:markdown'), true);
+	assert.equal(matchesSearchQuery(post, 'javascript tag:markdown'), false);
+});
+
+test('a post with no tags never matches a tag filter', () => {
+	assert.equal(matchesSearchQuery({ title: 'First Post', description: '' }, 'tag:astro'), false);
+});
