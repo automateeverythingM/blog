@@ -5,6 +5,8 @@
  * search page (see src/pages/search/index.astro) - so the query box and any
  * future search UI stay consistent with the index used to build them.
  */
+import { parseSearchQuery } from './parseSearchQuery.ts';
+
 export type SearchablePost = {
 	title: string;
 	description: string;
@@ -44,12 +46,22 @@ function normalize(text: string): string {
  * matches a post titled "Markdown Style Guide" tagged "astro". A word may
  * use simple pattern syntax ("colou?r") to match spelling variants.
  *
+ * A word written as `tag:<name>` (see parseSearchQuery.ts) is a filter
+ * instead: the post must have exactly that tag (case- and
+ * diacritic-insensitively), so "tag:astro markdown" finds Markdown posts
+ * tagged astro.
+ *
  * An empty (or whitespace-only) query matches every post, so the search page
  * can show the full list before the visitor has typed anything.
  */
 export function matchesSearchQuery(post: SearchablePost, query: string): boolean {
-	const words = normalize(query.trim()).split(/\s+/).filter(Boolean);
-	if (words.length === 0) return true;
+	const parsed = parseSearchQuery(query);
+	const words = parsed.words.map(normalize);
+	if (words.length === 0 && parsed.tags.length === 0) return true;
+
+	const postTags = (post.tags ?? []).map(normalize);
+	if (!parsed.tags.every((tag) => postTags.some((postTag) => postTag === normalize(tag))))
+		return false;
 
 	const haystack = normalize([post.title, post.description, ...(post.tags ?? [])].join(' '));
 	// Each word is read as a pattern, so a visitor can type "colou?r" or "post(s)"
