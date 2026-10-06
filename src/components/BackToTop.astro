@@ -1,0 +1,81 @@
+---
+// Shown at the bottom of every blog post, between the post content and
+// PostNavigation (see src/pages/blog/[...slug].astro) - never on the home
+// page or tag pages, since those pages don't render this component.
+//
+// Two pieces, per the ticket:
+// - An inline text-only "Back to top" link, in the blog's existing link
+//   style, always present.
+// - A floating icon-only circular button, bottom-right of the screen, shown
+//   only once the post is "long" (see isLongPost.ts) - a short post has no
+//   need for it.
+//
+// Both link to the plain `#top` fragment, which every browser scrolls to the
+// very top of the document for, with no `id="top"` element required and no
+// JavaScript needed. `scroll-behavior: smooth` (see global.css) makes that
+// scroll smooth; the inline <script> below only toggles the floating
+// button's visibility, it never drives the scroll itself.
+---
+
+<a class="back-to-top-link" href="#top">
+	Back to top
+</a>
+<a class="back-to-top-button" href="#top" aria-label="Back to top">
+	<svg viewBox="0 0 24 24" aria-hidden="true" width="24" height="24">
+		<path
+			fill="none"
+			stroke="currentColor"
+			stroke-width="2"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+			d="M12 19V5M5 12l7-7 7 7"
+		></path>
+	</svg>
+</a>
+
+<style>
+	.back-to-top-link {
+		display: inline-block;
+		margin-top: 2em;
+	}
+
+	.back-to-top-button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		position: fixed;
+		right: 1.5em;
+		bottom: 1.5em;
+		width: 3em;
+		height: 3em;
+		border-radius: 50%;
+		background: white;
+		color: var(--accent);
+		box-shadow: var(--box-shadow);
+		opacity: 0;
+		visibility: hidden;
+		transition: opacity 0.2s ease-in-out;
+	}
+
+	.back-to-top-button.is-visible {
+		opacity: 1;
+		visibility: visible;
+	}
+</style>
+
+<script>
+	import { isLongPost } from '../lib/isLongPost.ts';
+
+	const button = document.querySelector<HTMLAnchorElement>('.back-to-top-button');
+
+	if (button) {
+		const updateVisibility = () => {
+			const isLong = isLongPost(document.documentElement.scrollHeight, window.innerHeight);
+			button.classList.toggle('is-visible', isLong);
+		};
+
+		updateVisibility();
+		window.addEventListener('load', updateVisibility);
+		window.addEventListener('resize', updateVisibility);
+	}
+</script>
